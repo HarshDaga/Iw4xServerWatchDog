@@ -41,7 +41,10 @@ namespace Iw4xServerWatchDog.ProcessManagement
 				if ( !IsRunning )
 					Process = FindProcess ( );
 				if ( !IsRunning )
+				{
+					Kill ( );
 					Process = Process.Start ( startInfo );
+				}
 			}
 			catch ( Exception e )
 			{
@@ -53,6 +56,9 @@ namespace Iw4xServerWatchDog.ProcessManagement
 		{
 			try
 			{
+				KillProcess ( ProcessName, Name );
+				KillProcess ( ProcessName, "ERROR" );
+				KillProcess ( "conhost", Name );
 				var proc = FindProcess ( );
 				proc?.Kill ( );
 				Process = null;
@@ -69,13 +75,22 @@ namespace Iw4xServerWatchDog.ProcessManagement
 			Start ( );
 		}
 
-		private Process FindProcess ( )
+		private Process FindProcess ( ) =>
+			FindProcess ( ProcessName, Name );
+
+		private static Process FindProcess ( string name, string title )
 		{
-			var processes = Process.GetProcessesByName ( ProcessName );
+			var processes = Process.GetProcessesByName ( name );
 			return processes
 				.FirstOrDefault (
-					process => process.MainWindowTitle.Equals ( Name, StringComparison.OrdinalIgnoreCase )
+					process => process.MainWindowTitle.Equals ( title, StringComparison.OrdinalIgnoreCase )
 				);
+		}
+
+		private static void KillProcess ( string name, string title )
+		{
+			var process = FindProcess ( name, title );
+			process?.Kill ( );
 		}
 
 		public override string ToString ( ) =>

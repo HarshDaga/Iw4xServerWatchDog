@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Iw4xServerWatchDog.Monitor.Types;
+using static Iw4xServerWatchDog.Monitor.ServerStatusChangedEventArgs;
 
 namespace Iw4xServerWatchDog.Monitor
 {
@@ -59,16 +60,16 @@ namespace Iw4xServerWatchDog.Monitor
 					Server.Port = Port;
 
 					if ( old is null )
-						subject.OnNext ( ServerStatusChangedEventArgs.Online ( Server ) );
+						subject.OnNext ( Online ( Server ) );
 					else if ( !Server.Equals ( old ) )
-						subject.OnNext ( ServerStatusChangedEventArgs.Updated ( Server, old ) );
+						subject.OnNext ( Updated ( Server, old ) );
 				}
 				catch ( Exception )
 				{
 					var wasOffline = Server is null;
 					Server = null;
 					if ( !wasOffline )
-						subject.OnNext ( ServerStatusChangedEventArgs.Offline ( Port ) );
+						subject.OnNext ( Offline ( Port ) );
 				}
 
 				await Task.Delay ( PollingFrequency, cts.Token );

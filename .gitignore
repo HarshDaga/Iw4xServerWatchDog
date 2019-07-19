@@ -338,3 +338,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/Iw4xServerWatchDog.exe
+/Iw4xServerWatchDog/Iw4xServerWatchDog.exe
+/NLog.config

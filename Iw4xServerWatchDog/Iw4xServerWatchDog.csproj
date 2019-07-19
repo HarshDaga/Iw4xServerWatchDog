@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,15 @@
     <ProjectReference Include="..\Iw4xServerWatchDog.Monitor\Iw4xServerWatchDog.Monitor.csproj" />
     <ProjectReference Include="..\Iw4xServerWatchDog.ProcessManagement\Iw4xServerWatchDog.ProcessManagement.csproj" />
     <ProjectReference Include="..\PortableJsonConfig\PortableJsonConfig.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="C:\Users\harsh\.nuget\packages\nlog.config\4.6.6\contentFiles\any\any\NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
