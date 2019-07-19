@@ -2,8 +2,8 @@
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
-using Flurl.Http;
 using Iw4xServerWatchDog.Monitor.Types;
+using RestSharp;
 using static Iw4xServerWatchDog.Monitor.ServerStatusChangedEventArgs;
 
 namespace Iw4xServerWatchDog.Monitor
@@ -16,14 +16,18 @@ namespace Iw4xServerWatchDog.Monitor
 		public ServerInfo Server { get; private set; }
 		public string Url { get; }
 		public TimeSpan PollingFrequency { get; set; } = TimeSpan.FromSeconds ( 1 );
-		private readonly Subject<ServerStatusChangedEventArgs> subject;
+		public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds ( 6 );
+		public TimeSpan RestartTime { get; set; } = TimeSpan.FromSeconds ( 10 );
 
+		private readonly RestClient client;
+		private readonly Subject<ServerStatusChangedEventArgs> subject;
 		private CancellationTokenSource cts;
 
 		public ServerMonitor ( int port, string baseUrl = @"http:\\localhost" )
 		{
 			Port    = port;
 			Url     = $@"{baseUrl}:{Port}/info";
+			client  = new RestClient ( $"{baseUrl}:{Port}" );
 			subject = new Subject<ServerStatusChangedEventArgs> ( );
 		}
 
@@ -56,7 +60,16 @@ namespace Iw4xServerWatchDog.Monitor
 				try
 				{
 					var old = Server;
-					Server      = await Url.GetJsonAsync<ServerInfo> ( cts.Token );
+					var req = new RestRequest ( "info" ) {Timeout = (int) Timeout.TotalMilliseconds};
+					var resp = await client.ExecuteGetTaskAsync<ServerInfo> ( req, cts.Token );
+					if ( !resp.IsSuccessful )
+					{
+						HandleOffline ( );
+						await Task.Delay ( RestartTime );
+						continue;
+					}
+
+					Server      = resp.Data;
 					Server.Port = Port;
 
 					if ( old is null )
@@ -66,14 +79,19 @@ namespace Iw4xServerWatchDog.Monitor
 				}
 				catch ( Exception )
 				{
-					var wasOffline = Server is null;
-					Server = null;
-					if ( !wasOffline )
-						subject.OnNext ( Offline ( Port ) );
+					HandleOffline ( );
 				}
 
 				await Task.Delay ( PollingFrequency, cts.Token );
 			}
+		}
+
+		private void HandleOffline ( )
+		{
+			var wasOffline = Server is null;
+			Server = null;
+			if ( !wasOffline )
+				subject.OnNext ( Offline ( Port ) );
 		}
 	}
 }

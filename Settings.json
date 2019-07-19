@@ -1,0 +1,16 @@
+{
+  "Servers": [
+    {
+      "Port": 28960,
+      "Name": "Dank Server",
+      "Path": "C:\\Games\\IW4x\\server.bat",
+      "ProcessName": "iw4x"
+    },
+    {
+      "Port": 28961,
+      "Name": "Dank Server 2",
+      "Path": "C:\\Games\\IW4x\\server2.bat",
+      "ProcessName": "iw4x"
+    }
+  ]
+}
