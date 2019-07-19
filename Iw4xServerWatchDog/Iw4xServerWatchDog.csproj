@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,23 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="NLog" Version="4.6.6" />
-    <PackageReference Include="NLog.Config" Version="4.6.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Iw4xServerWatchDog.Monitor\Iw4xServerWatchDog.Monitor.csproj" />
     <ProjectReference Include="..\Iw4xServerWatchDog.ProcessManagement\Iw4xServerWatchDog.ProcessManagement.csproj" />
     <ProjectReference Include="..\PortableJsonConfig\PortableJsonConfig.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="C:\Users\harsh\.nuget\packages\nlog.config\4.6.6\contentFiles\any\any\NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

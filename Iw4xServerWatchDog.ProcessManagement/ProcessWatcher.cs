@@ -59,8 +59,7 @@ namespace Iw4xServerWatchDog.ProcessManagement
 				KillProcess ( ProcessName, Name );
 				KillProcess ( ProcessName, "ERROR" );
 				KillProcess ( "conhost", Name );
-				var proc = FindProcess ( );
-				proc?.Kill ( );
+
 				Process = null;
 			}
 			catch ( Exception e )
