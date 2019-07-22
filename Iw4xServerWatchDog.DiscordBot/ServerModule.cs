@@ -12,16 +12,19 @@ namespace Iw4xServerWatchDog.DiscordBot
 	{
 		public IDiscordBotConfig Config { get; }
 		public IServerMonitorService MonitorService { get; }
+		public ILiveEmbedService EmbedService { get; }
 		public IChannelUpdaterService ChannelUpdaterService { get; }
 		public ICommonResources Resources { get; }
 
 		public ServerModule ( IDiscordBotConfig config,
 		                      IServerMonitorService monitorService,
+		                      ILiveEmbedService embedService,
 		                      IChannelUpdaterService channelUpdaterService,
 		                      ICommonResources resources )
 		{
 			Config                = config;
 			MonitorService        = monitorService;
+			EmbedService          = embedService;
 			ChannelUpdaterService = channelUpdaterService;
 			Resources             = resources;
 		}
@@ -32,7 +35,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 		{
 			foreach ( var monitor in MonitorService.Monitors.Values )
 			{
-				var embed = ChannelUpdaterService.GetEmbed ( monitor.Port );
+				var embed = EmbedService.GetEmbed ( monitor.Port );
 				if ( embed != null )
 					await ReplyAsync ( embed: embed );
 			}

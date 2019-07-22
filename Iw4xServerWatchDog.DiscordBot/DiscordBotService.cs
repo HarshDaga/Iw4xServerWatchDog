@@ -25,7 +25,8 @@ namespace Iw4xServerWatchDog.DiscordBot
 
 		private readonly DiscordSocketClient client;
 		private readonly CommandService commands;
-		private readonly ChannelUpdaterService channelUpdaterService;
+		private readonly ILiveEmbedService embedService;
+		private readonly IChannelUpdaterService channelUpdaterService;
 		private readonly IServiceProvider services;
 
 		public DiscordBotService ( IDiscordBotConfig config,
@@ -46,7 +47,8 @@ namespace Iw4xServerWatchDog.DiscordBot
 			commands.Log             += Log;
 			commands.CommandExecuted += CommandExecutedAsync;
 
-			channelUpdaterService = new ChannelUpdaterService ( Config, Resources );
+			embedService          = new LiveEmbedService ( Config, Resources );
+			channelUpdaterService = new ChannelUpdaterService ( Config, Resources, embedService );
 
 			var container = BuildContainer ( );
 			services = new AutofacServiceProvider ( container );
@@ -60,8 +62,8 @@ namespace Iw4xServerWatchDog.DiscordBot
 			await client.SetGameAsync ( "iw4x", null, ActivityType.Watching );
 
 			foreach ( var server in MonitorService.Config.Servers )
-				channelUpdaterService.Add ( server.Port, server.Name );
-			channelUpdaterService.SubscribeTo ( MonitorService );
+				embedService.Add ( server.Port, server.Name );
+			embedService.SubscribeTo ( MonitorService );
 		}
 
 		private IContainer BuildContainer ( )
@@ -73,6 +75,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 			builder.RegisterInstance ( WatcherService ).As<IProcessWatcherService> ( );
 			builder.RegisterInstance ( Resources ).As<ICommonResources> ( );
 			builder.RegisterInstance ( Config ).As<IDiscordBotConfig> ( );
+			builder.RegisterInstance ( embedService ).As<ILiveEmbedService> ( );
 			builder.RegisterInstance ( channelUpdaterService ).As<IChannelUpdaterService> ( );
 			return builder.Build ( );
 		}

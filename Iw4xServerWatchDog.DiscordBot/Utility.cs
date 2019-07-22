@@ -16,6 +16,14 @@ namespace Iw4xServerWatchDog.DiscordBot
 		public static string RemoveColors ( string str ) =>
 			ColorsRegex.Replace ( str, "" );
 
+		public static Task DeleteMessagesAsync ( IAsyncEnumerable<IReadOnlyCollection<IMessage>> messages ) =>
+			DeleteMessagesAsync ( messages, m => true );
+
+		public static Task DeleteMessagesAsync (
+			IAsyncEnumerable<IReadOnlyCollection<IMessage>> messages,
+			Func<IMessage, bool> predicate
+		) => DeleteMessagesAsync ( messages, predicate, TimeSpan.FromMilliseconds ( 100 ) );
+
 		public static async Task DeleteMessagesAsync (
 			IAsyncEnumerable<IReadOnlyCollection<IMessage>> messages,
 			Func<IMessage, bool> predicate,
