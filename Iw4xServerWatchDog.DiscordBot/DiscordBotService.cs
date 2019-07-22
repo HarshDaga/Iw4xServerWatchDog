@@ -29,9 +29,9 @@ namespace Iw4xServerWatchDog.DiscordBot
 		private readonly IServiceProvider services;
 
 		public DiscordBotService ( IDiscordBotConfig config,
-		                                  IServerMonitorService monitorService,
-		                                  IProcessWatcherService watcherService,
-		                                  ICommonResources resources )
+		                           IServerMonitorService monitorService,
+		                           IProcessWatcherService watcherService,
+		                           ICommonResources resources )
 		{
 			Config         = config;
 			MonitorService = monitorService;

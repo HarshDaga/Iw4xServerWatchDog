@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Iw4xServerWatchDog.Common.Configs;
+using Iw4xServerWatchDog.Common.Types;
 using Iw4xServerWatchDog.DiscordBot.Configs;
 using Iw4xServerWatchDog.Monitor;
 using Iw4xServerWatchDog.Monitor.Types;
@@ -16,8 +17,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 		public ServerInfo ServerInfo { get; private set; }
 		public string ServerName { get; private set; }
 		public string MapName { get; private set; }
-		public string MapNameFull { get; private set; }
-		public string MapIconUrl { get; private set; }
+		public Map Map { get; private set; }
 		public string GameType { get; private set; }
 		public int MaxPlayers { get; private set; }
 		public Embed Embed { get; private set; }
@@ -58,10 +58,11 @@ namespace Iw4xServerWatchDog.DiscordBot
 			};
 			if ( info != null )
 				builder
-					.WithThumbnailUrl ( MapIconUrl )
-					.AddField ( "Map", MapNameFull, true )
+					.WithThumbnailUrl ( Map?.Image )
+					.AddField ( "Map", Map?.Name, true )
 					.AddField ( "Game Type", GameType, true )
-					.AddField ( "Players", $"{info.Players.Count}/{MaxPlayers}", true );
+					.AddField ( "Players", $"{info.Players.Count}/{MaxPlayers}", true )
+					.WithCurrentTimestamp ( );
 			if ( isOffline )
 				builder.WithFooter ( "The data above is the server state before going offline" );
 			builder.Description = $"<{ConnectString}>";
@@ -73,26 +74,22 @@ namespace Iw4xServerWatchDog.DiscordBot
 		{
 			if ( info?.Status is null )
 			{
-				MapName    = MapNameFull = MapIconUrl = GameType = null;
+				MapName    = GameType = null;
+				Map        = null;
 				MaxPlayers = 0;
 				return;
 			}
 
-			ServerName  = Utility.RemoveColors ( info.Status.SvHostname );
-			MapName     = info.Status.MapName;
-			MapNameFull = MapName;
-			MapIconUrl  = null;
-			GameType    = info.Status.GameType;
-			MaxPlayers  = info.Status.SvMaxClients;
+			ServerName = Utility.RemoveColors ( info.Status.SvHostname );
+			MapName    = info.Status.MapName;
+			GameType   = info.Status.GameType;
+			MaxPlayers = info.Status.SvMaxClients;
 
 			if ( Resources?.Map is null )
 				return;
 
 			if ( Resources.Map.TryGetValue ( MapName, out var map ) )
-			{
-				MapNameFull = map.Name;
-				MapIconUrl  = map.Image.AbsoluteUri;
-			}
+				Map = map;
 
 			if ( Resources.GameType.TryGetValue ( GameType, out var gameTypeFull ) )
 				GameType = gameTypeFull;
