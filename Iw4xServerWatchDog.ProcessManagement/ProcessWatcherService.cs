@@ -5,11 +5,11 @@ using System.Threading;
 
 namespace Iw4xServerWatchDog.ProcessManagement
 {
-	public class ProcessWatcherCollection : IReadOnlyDictionary<int, ProcessWatcher>
+	public class ProcessWatcherService : IProcessWatcherService
 	{
 		private ImmutableDictionary<int, ProcessWatcher> watchers;
 
-		public ProcessWatcherCollection ( )
+		public ProcessWatcherService ( )
 		{
 			watchers = ImmutableDictionary<int, ProcessWatcher>.Empty;
 		}

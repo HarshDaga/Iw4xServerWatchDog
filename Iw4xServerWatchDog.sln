@@ -7,9 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iw4xServerWatchDog", "Iw4xS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iw4xServerWatchDog.Monitor", "Iw4xServerWatchDog.Monitor\Iw4xServerWatchDog.Monitor.csproj", "{ADB9A27B-EF8A-4FFC-9085-369201155452}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iw4xServerWatchDog.ProcessManagement", "Iw4xServerWatchDog.ProcessManagement\Iw4xServerWatchDog.ProcessManagement.csproj", "{A2B5C121-D45F-47F8-8DB5-7D8998832562}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iw4xServerWatchDog.ProcessManagement", "Iw4xServerWatchDog.ProcessManagement\Iw4xServerWatchDog.ProcessManagement.csproj", "{A2B5C121-D45F-47F8-8DB5-7D8998832562}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortableJsonConfig", "PortableJsonConfig\PortableJsonConfig.csproj", "{D23C8598-8ABB-45E8-8872-5D32C0741B8F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iw4xServerWatchDog.DiscordBot", "Iw4xServerWatchDog.DiscordBot\Iw4xServerWatchDog.DiscordBot.csproj", "{7FD5DFE0-E5F5-4974-9593-AA3155A498D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iw4xServerWatchDog.Common", "Iw4xServerWatchDog.Common\Iw4xServerWatchDog.Common.csproj", "{9F19BBEC-0A12-40BF-B626-076EEDEA3FC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{D23C8598-8ABB-45E8-8872-5D32C0741B8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D23C8598-8ABB-45E8-8872-5D32C0741B8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D23C8598-8ABB-45E8-8872-5D32C0741B8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FD5DFE0-E5F5-4974-9593-AA3155A498D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FD5DFE0-E5F5-4974-9593-AA3155A498D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FD5DFE0-E5F5-4974-9593-AA3155A498D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FD5DFE0-E5F5-4974-9593-AA3155A498D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F19BBEC-0A12-40BF-B626-076EEDEA3FC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F19BBEC-0A12-40BF-B626-076EEDEA3FC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F19BBEC-0A12-40BF-B626-076EEDEA3FC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F19BBEC-0A12-40BF-B626-076EEDEA3FC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,6 +3,7 @@ using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Iw4xServerWatchDog.Monitor.Types;
+using Newtonsoft.Json;
 using RestSharp;
 using static Iw4xServerWatchDog.Monitor.ServerStatusChangedEventArgs;
 
@@ -14,10 +15,11 @@ namespace Iw4xServerWatchDog.Monitor
 		public int Port { get; }
 		public bool IsRunning { get; private set; }
 		public ServerInfo Server { get; private set; }
-		public string Url { get; }
 		public TimeSpan PollingFrequency { get; set; } = TimeSpan.FromSeconds ( 1 );
 		public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds ( 6 );
 		public TimeSpan RestartTime { get; set; } = TimeSpan.FromSeconds ( 10 );
+		public int OfflineCount { get; private set; }
+		public bool IsOnline => Server != null;
 
 		private readonly RestClient client;
 		private readonly Subject<ServerStatusChangedEventArgs> subject;
@@ -26,7 +28,6 @@ namespace Iw4xServerWatchDog.Monitor
 		public ServerMonitor ( int port, string baseUrl = @"http:\\localhost" )
 		{
 			Port    = port;
-			Url     = $@"{baseUrl}:{Port}/info";
 			client  = new RestClient ( $"{baseUrl}:{Port}" );
 			subject = new Subject<ServerStatusChangedEventArgs> ( );
 		}
@@ -60,8 +61,7 @@ namespace Iw4xServerWatchDog.Monitor
 				try
 				{
 					var old = Server;
-					var req = new RestRequest ( "info" ) {Timeout = (int) Timeout.TotalMilliseconds};
-					var resp = await client.ExecuteGetTaskAsync<ServerInfo> ( req, cts.Token );
+					var resp = await GetResponse ( );
 					if ( !resp.IsSuccessful )
 					{
 						HandleOffline ( );
@@ -69,7 +69,7 @@ namespace Iw4xServerWatchDog.Monitor
 						continue;
 					}
 
-					Server      = resp.Data;
+					Server      = JsonConvert.DeserializeObject<ServerInfo> ( resp.Data );
 					Server.Port = Port;
 
 					if ( old is null )
@@ -86,12 +86,25 @@ namespace Iw4xServerWatchDog.Monitor
 			}
 		}
 
+		private async Task<IRestResponse<string>> GetResponse ( )
+		{
+			var req = new RestRequest ( "info" ) {Timeout = (int) Timeout.TotalMilliseconds};
+			var resp = await client.ExecuteGetTaskAsync<string> ( req, cts.Token );
+			return resp;
+		}
+
 		private void HandleOffline ( )
 		{
 			var wasOffline = Server is null;
 			Server = null;
-			if ( !wasOffline )
+			if ( !wasOffline || OfflineCount == 0 )
+			{
+				++OfflineCount;
 				subject.OnNext ( Offline ( Port ) );
+			}
 		}
+
+		public override string ToString ( ) =>
+			$"Monitor Running: {IsRunning} Server: {Server}";
 	}
 }

@@ -9,6 +9,9 @@ namespace PortableJsonConfig
 		[JsonIgnore]
 		string ConfigFileName { get; }
 
+		[JsonIgnore]
+		string ConfigFolderName { get; }
+
 		bool TryValidate ( out IList<Exception> exceptions );
 	}
 

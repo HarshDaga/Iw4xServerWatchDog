@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,17 +7,16 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+    <PackageReference Include="Discord.Net" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="NLog" Version="4.6.6" />
-    <PackageReference Include="RestSharp" Version="106.6.10" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
     <PackageReference Include="System.Reactive" Version="4.1.5" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Iw4xServerWatchDog.Common\Iw4xServerWatchDog.Common.csproj" />
+    <ProjectReference Include="..\Iw4xServerWatchDog.Monitor\Iw4xServerWatchDog.Monitor.csproj" />
+    <ProjectReference Include="..\Iw4xServerWatchDog.ProcessManagement\Iw4xServerWatchDog.ProcessManagement.csproj" />
     <ProjectReference Include="..\PortableJsonConfig\PortableJsonConfig.csproj" />
   </ItemGroup>
 

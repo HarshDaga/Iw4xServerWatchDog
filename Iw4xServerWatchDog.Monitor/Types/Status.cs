@@ -59,75 +59,75 @@ namespace Iw4xServerWatchDog.Monitor.Types
 
 		[JsonProperty ( "g_hardcore" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long GHardcore { get; set; }
+		public int GHardcore { get; set; }
 
 		[JsonProperty ( "gamename" )]
 		public string GameName { get; set; }
 
 		[JsonProperty ( "isPrivate" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long IsPrivate { get; set; }
+		public int IsPrivate { get; set; }
 
 		[JsonProperty ( "mapname" )]
 		public string MapName { get; set; }
 
 		[JsonProperty ( "matchtype" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long MatchType { get; set; }
+		public int MatchType { get; set; }
 
 		[JsonProperty ( "protocol" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long Protocol { get; set; }
+		public int Protocol { get; set; }
 
 		[JsonProperty ( "shortversion" )]
 		public string ShortVersion { get; set; }
 
 		[JsonProperty ( "sv_allowAnonymous" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvAllowAnonymous { get; set; }
+		public int SvAllowAnonymous { get; set; }
 
 		[JsonProperty ( "sv_allowClientConsole" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvAllowClientConsole { get; set; }
+		public int SvAllowClientConsole { get; set; }
 
 		[JsonProperty ( "sv_floodProtect" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvFloodProtect { get; set; }
+		public int SvFloodProtect { get; set; }
 
 		[JsonProperty ( "sv_hostname" )]
 		public string SvHostname { get; set; }
 
 		[JsonProperty ( "sv_maxPing" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvMaxPing { get; set; }
+		public int SvMaxPing { get; set; }
 
 		[JsonProperty ( "sv_maxRate" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvMaxRate { get; set; }
+		public int SvMaxRate { get; set; }
 
 		[JsonProperty ( "sv_maxclients" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvMaxClients { get; set; }
+		public int SvMaxClients { get; set; }
 
 		[JsonProperty ( "sv_minPing" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvMinPing { get; set; }
+		public int SvMinPing { get; set; }
 
 		[JsonProperty ( "sv_privateClients" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvPrivateClients { get; set; }
+		public int SvPrivateClients { get; set; }
 
 		[JsonProperty ( "sv_privateClientsForClients" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvPrivateClientsForClients { get; set; }
+		public int SvPrivateClientsForClients { get; set; }
 
 		[JsonProperty ( "sv_pure" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvPure { get; set; }
+		public int SvPure { get; set; }
 
 		[JsonProperty ( "sv_securityLevel" )]
 		[JsonConverter ( typeof (ParseStringConverter) )]
-		public long SvSecurityLevel { get; set; }
+		public int SvSecurityLevel { get; set; }
 
 		#endregion
 	}

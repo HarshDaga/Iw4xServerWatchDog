@@ -46,7 +46,8 @@ namespace PortableJsonConfig
 			private set;
 		}
 
-		public static string FileName => $"{instance.ConfigFileName}.json";
+		public static string FileName =>
+			Path.Combine ( instance.ConfigFolderName ?? "Configs", $"{instance.ConfigFileName}.json" );
 
 		public static string Serialized =>
 			JsonConvert.SerializeObject ( instance, ConfigManager.SerializerSettings );
@@ -71,7 +72,12 @@ namespace PortableJsonConfig
 		{
 			try
 			{
-				lock ( FileLock ) File.WriteAllText ( FileName, Serialized );
+				lock ( FileLock )
+				{
+					if ( !Directory.Exists ( instance.ConfigFolderName ) )
+						Directory.CreateDirectory ( instance.ConfigFolderName );
+					File.WriteAllText ( FileName, Serialized );
+				}
 			}
 			catch ( Exception e )
 			{
@@ -104,7 +110,11 @@ namespace PortableJsonConfig
 			{
 				instance = instance.RestoreDefaults ( );
 				lock ( FileLock )
+				{
+					if ( !Directory.Exists ( instance.ConfigFolderName ) )
+						Directory.CreateDirectory ( instance.ConfigFolderName );
 					File.WriteAllText ( FileName, Serialized );
+				}
 			}
 			catch ( Exception e )
 			{
@@ -124,6 +134,8 @@ namespace PortableJsonConfig
 
 					instance = new TConfig ( );
 
+					if ( !Directory.Exists ( instance.ConfigFolderName ) )
+						Directory.CreateDirectory ( instance.ConfigFolderName );
 					File.WriteAllText ( FileName, Serialized );
 				}
 			}

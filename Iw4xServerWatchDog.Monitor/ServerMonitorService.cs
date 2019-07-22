@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reactive.Subjects;
 using System.Threading;
+using Iw4xServerWatchDog.Monitor.Configs;
 
 namespace Iw4xServerWatchDog.Monitor
 {
-	public class ServerMonitorCollection :
-		IObservable<ServerStatusChangedEventArgs>
+	public class ServerMonitorService :
+		IServerMonitorService
 	{
-		public string BaseUrl { get; }
+		public IServersConfig Config { get; }
+
 		public IReadOnlyDictionary<int, ServerMonitor> Monitors => monitors;
 		private readonly Subject<ServerStatusChangedEventArgs> subject;
 
 		private ImmutableDictionary<int, ServerMonitor> monitors;
 
-		public ServerMonitorCollection ( string baseUrl = @"http:\\localhost" )
+		public ServerMonitorService ( IServersConfig config )
 		{
-			BaseUrl  = baseUrl;
+			Config   = config;
 			monitors = ImmutableDictionary<int, ServerMonitor>.Empty;
 			subject  = new Subject<ServerStatusChangedEventArgs> ( );
 		}
@@ -27,7 +29,12 @@ namespace Iw4xServerWatchDog.Monitor
 
 		public void Add ( int port )
 		{
-			var monitor = new ServerMonitor ( port, BaseUrl );
+			var monitor = new ServerMonitor ( port, Config.BaseUrl )
+			{
+				PollingFrequency = Config.PollingFrequency,
+				Timeout          = Config.Timeout,
+				RestartTime      = Config.RestartTime
+			};
 			monitor.Subscribe ( subject );
 			Interlocked.Exchange ( ref monitors, monitors.SetItem ( port, monitor ) );
 		}

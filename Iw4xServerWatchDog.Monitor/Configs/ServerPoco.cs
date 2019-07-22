@@ -1,4 +1,4 @@
-﻿namespace Iw4xServerWatchDog.Configs
+﻿namespace Iw4xServerWatchDog.Monitor.Configs
 {
 	public class ServerPoco
 	{

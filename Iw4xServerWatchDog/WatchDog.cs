@@ -1,40 +1,49 @@
 ﻿using System;
 using System.Linq;
 using System.Reactive.Linq;
-using Iw4xServerWatchDog.Configs;
+using Iw4xServerWatchDog.DiscordBot;
 using Iw4xServerWatchDog.Monitor;
+using Iw4xServerWatchDog.Monitor.Configs;
 using Iw4xServerWatchDog.ProcessManagement;
 using NLog;
 
 namespace Iw4xServerWatchDog
 {
-	public class WatchDog
+	public class WatchDog : IWatchDog
 	{
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( );
 
-		public Settings Settings { get; }
-		public ProcessWatcherCollection Watchers { get; private set; }
-		public ServerMonitorCollection ServerMonitors { get; private set; }
+		public IServersConfig ServersConfig { get; }
+		public IProcessWatcherService WatcherService { get; }
+		public IServerMonitorService MonitorService { get; }
+		public IDiscordBotService DiscordBotService { get; }
 
-		public WatchDog ( Settings settings )
+		public WatchDog ( IServerMonitorService monitorService,
+		                  IProcessWatcherService watcherService,
+		                  IServersConfig serversConfig,
+		                  IDiscordBotService discordBotService )
 		{
-			Settings = settings;
+			MonitorService    = monitorService;
+			WatcherService    = watcherService;
+			ServersConfig     = serversConfig;
+			DiscordBotService = discordBotService;
 		}
 
 		public void Init ( )
 		{
-			CreateProcessWatchers ( );
-			CreateServerMonitors ( );
+			AddProcessWatchers ( );
+			AddServerMonitors ( );
 
-			ServerMonitors.Where ( x => x.Type == ServerEventType.Offline ).Subscribe ( OnOffline );
-			ServerMonitors.Where ( x => x.Type == ServerEventType.Online ).Subscribe ( OnOnline );
-			ServerMonitors.Where ( x => x.Type == ServerEventType.Updated ).Subscribe ( OnUpdated );
+			MonitorService.Where ( x => x.Type == ServerEventType.Offline ).Subscribe ( OnOffline );
+			MonitorService.Where ( x => x.Type == ServerEventType.Online ).Subscribe ( OnOnline );
+			MonitorService.Where ( x => x.Type == ServerEventType.Updated ).Subscribe ( OnUpdated );
 		}
 
 		public void Start ( )
 		{
-			Watchers.StartAll ( );
-			ServerMonitors.StartAll ( );
+			WatcherService.StartAll ( );
+			MonitorService.StartAll ( );
+			DiscordBotService.StartAsync ( ).GetAwaiter ( ).GetResult ( );
 		}
 
 		private void OnOnline ( ServerStatusChangedEventArgs args )
@@ -45,7 +54,7 @@ namespace Iw4xServerWatchDog
 		private void OnOffline ( ServerStatusChangedEventArgs args )
 		{
 			Logger.Warn ( args );
-			Watchers.Restart ( args.Port );
+			WatcherService.Restart ( args.Port );
 		}
 
 		private void OnUpdated ( ServerStatusChangedEventArgs args )
@@ -57,18 +66,16 @@ namespace Iw4xServerWatchDog
 					$"{args.Port} {args.ServerInfo.Status.SvHostname} changed map to {args.ServerInfo.Status.MapName}" );
 		}
 
-		private void CreateProcessWatchers ( )
+		private void AddProcessWatchers ( )
 		{
-			Watchers = new ProcessWatcherCollection ( );
-			foreach ( var server in Settings.Servers )
-				Watchers.Add ( new ProcessWatcher ( server.Port, server.Name, server.Path, server.ProcessName ) );
+			foreach ( var server in ServersConfig.Servers )
+				WatcherService.Add ( new ProcessWatcher ( server.Port, server.Name, server.Path, server.ProcessName ) );
 		}
 
-		private void CreateServerMonitors ( )
+		private void AddServerMonitors ( )
 		{
-			ServerMonitors = new ServerMonitorCollection ( );
-			foreach ( var port in Settings.Servers.Select ( x => x.Port ) )
-				ServerMonitors.Add ( port );
+			foreach ( var port in ServersConfig.Servers.Select ( x => x.Port ) )
+				MonitorService.Add ( port );
 		}
 	}
 }
