@@ -1,4 +1,6 @@
-﻿namespace Iw4xServerWatchDog.DiscordBot.Configs
+﻿using System;
+
+namespace Iw4xServerWatchDog.DiscordBot.Configs
 {
 	public interface IDiscordBotConfig
 	{
@@ -7,5 +9,6 @@
 
 		// ReSharper disable once InconsistentNaming
 		string ExternalIP { get; set; }
+		TimeSpan MessageCooldown { get; set; }
 	}
 }

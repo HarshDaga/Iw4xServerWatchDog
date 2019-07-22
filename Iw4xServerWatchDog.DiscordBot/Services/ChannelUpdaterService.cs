@@ -18,15 +18,17 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 		private readonly ConcurrentDictionary<int, IUserMessage> messages;
 		private readonly Subject<ServerEmbedInfo> subject;
 		private IMessageChannel channel;
+		private DateTime nextMessageWaitTime;
 
 		public ChannelUpdaterService ( IDiscordBotConfig config, ICommonResources resources )
 		{
 			Config    = config;
 			Resources = resources;
 
-			embeds   = new ConcurrentDictionary<int, ServerEmbedInfo> ( );
-			messages = new ConcurrentDictionary<int, IUserMessage> ( );
-			subject  = new Subject<ServerEmbedInfo> ( );
+			embeds              = new ConcurrentDictionary<int, ServerEmbedInfo> ( );
+			messages            = new ConcurrentDictionary<int, IUserMessage> ( );
+			subject             = new Subject<ServerEmbedInfo> ( );
+			nextMessageWaitTime = DateTime.Now;
 		}
 
 		public void Add ( int port, string serverName )
@@ -89,6 +91,11 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 		{
 			if ( channel is null )
 				return;
+
+			var now = DateTime.Now;
+			if ( nextMessageWaitTime > now )
+				await Task.Delay ( nextMessageWaitTime - now );
+			nextMessageWaitTime = now + Config.MessageCooldown;
 
 			var port = embedInfo.Port;
 			if ( messages.TryGetValue ( port, out var message ) )
