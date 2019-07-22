@@ -15,6 +15,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 		public string ConnectString { get; }
 
 		public ServerInfo ServerInfo { get; private set; }
+		public ServerEventType EventType { get; private set; }
 		public string ServerName { get; private set; }
 		public string MapName { get; private set; }
 		public Map Map { get; private set; }
@@ -41,6 +42,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 			ServerInfo = args.ServerInfo;
 			var isOffline = args.Type == ServerEventType.Offline;
 			var info = isOffline ? old : args.ServerInfo;
+			EventType = args.Type;
 
 			var builder = GetBuilder ( info, isOffline );
 			Embed = builder.Build ( );

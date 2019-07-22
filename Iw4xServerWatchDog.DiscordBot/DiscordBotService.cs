@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using Iw4xServerWatchDog.Common.Configs;
 using Iw4xServerWatchDog.DiscordBot.Configs;
 using Iw4xServerWatchDog.DiscordBot.Services;
+using Iw4xServerWatchDog.DiscordBot.Services.Interfaces;
 using Iw4xServerWatchDog.Monitor;
 using Iw4xServerWatchDog.ProcessManagement;
 using NLog;
@@ -27,6 +28,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 		private readonly CommandService commands;
 		private readonly ILiveEmbedService embedService;
 		private readonly IChannelUpdaterService channelUpdaterService;
+		private readonly PersonalNotificationService personalNotificationService;
 		private readonly IServiceProvider services;
 
 		public DiscordBotService ( IDiscordBotConfig config,
@@ -47,8 +49,9 @@ namespace Iw4xServerWatchDog.DiscordBot
 			commands.Log             += Log;
 			commands.CommandExecuted += CommandExecutedAsync;
 
-			embedService          = new LiveEmbedService ( Config, Resources );
-			channelUpdaterService = new ChannelUpdaterService ( Config, Resources, embedService );
+			embedService                = new LiveEmbedService ( Config, Resources );
+			channelUpdaterService       = new ChannelUpdaterService ( Config, embedService );
+			personalNotificationService = new PersonalNotificationService ( Config, embedService );
 
 			var container = BuildContainer ( );
 			services = new AutofacServiceProvider ( container );
@@ -77,6 +80,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 			builder.RegisterInstance ( Config ).As<IDiscordBotConfig> ( );
 			builder.RegisterInstance ( embedService ).As<ILiveEmbedService> ( );
 			builder.RegisterInstance ( channelUpdaterService ).As<IChannelUpdaterService> ( );
+			builder.RegisterInstance ( personalNotificationService ).As<PersonalNotificationService> ( );
 			return builder.Build ( );
 		}
 

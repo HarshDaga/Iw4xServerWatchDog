@@ -1,31 +1,30 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Discord;
-using Iw4xServerWatchDog.Common.Configs;
 using Iw4xServerWatchDog.DiscordBot.Configs;
+using Iw4xServerWatchDog.DiscordBot.Services.Interfaces;
+using Nito.AsyncEx;
 
 namespace Iw4xServerWatchDog.DiscordBot.Services
 {
 	public class ChannelUpdaterService : IChannelUpdaterService
 	{
 		public IDiscordBotConfig Config { get; }
-		public ICommonResources Resources { get; }
 		public ILiveEmbedService EmbedService { get; }
+		private readonly AsyncLock mutex = new AsyncLock ( );
 
-		private readonly ConcurrentDictionary<int, IUserMessage> messages;
+		private ImmutableDictionary<int, IUserMessage> messages;
 		private IMessageChannel channel;
 		private DateTime nextMessageWaitTime;
 
 		public ChannelUpdaterService ( IDiscordBotConfig config,
-		                               ICommonResources resources,
 		                               ILiveEmbedService embedService )
 		{
 			Config       = config;
-			Resources    = resources;
 			EmbedService = embedService;
 
-			messages            = new ConcurrentDictionary<int, IUserMessage> ( );
+			messages            = ImmutableDictionary<int, IUserMessage>.Empty;
 			nextMessageWaitTime = DateTime.Now;
 
 			EmbedService.Subscribe ( UpdateChannel );
@@ -38,7 +37,7 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 
 			channel = messageChannel;
 			await ClearChannelAsync ( messageChannel, botId );
-			messages.Clear ( );
+			messages = messages.Clear ( );
 
 			foreach ( var embedInfo in EmbedService.Embeds.Values )
 				await UpdateChannelAsync ( embedInfo );
@@ -60,18 +59,21 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 			if ( channel is null )
 				return;
 
-			var now = DateTime.Now;
-			if ( nextMessageWaitTime > now )
-				await Task.Delay ( nextMessageWaitTime - now );
-			nextMessageWaitTime = now + Config.MessageCooldown;
-
-			var port = embedInfo.Port;
-			if ( messages.TryGetValue ( port, out var message ) )
-				await message.ModifyAsync ( properties => { properties.Embed = embedInfo.Embed; } );
-			else
+			using ( await mutex.LockAsync ( ) )
 			{
-				message        = await channel.SendMessageAsync ( embed: embedInfo.Embed );
-				messages[port] = message;
+				var now = DateTime.Now;
+				if ( nextMessageWaitTime > now )
+					await Task.Delay ( nextMessageWaitTime - now );
+				nextMessageWaitTime = now + Config.MessageCooldown;
+
+				var port = embedInfo.Port;
+				if ( messages.TryGetValue ( port, out var message ) )
+					await message.ModifyAsync ( properties => { properties.Embed = embedInfo.Embed; } );
+				else
+				{
+					message  = await channel.SendMessageAsync ( embed: embedInfo.Embed );
+					messages = messages.SetItem ( port, message );
+				}
 			}
 		}
 	}

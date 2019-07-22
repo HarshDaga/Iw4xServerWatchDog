@@ -5,6 +5,7 @@ using System.Threading;
 using Discord;
 using Iw4xServerWatchDog.Common.Configs;
 using Iw4xServerWatchDog.DiscordBot.Configs;
+using Iw4xServerWatchDog.DiscordBot.Services.Interfaces;
 using Iw4xServerWatchDog.Monitor;
 
 namespace Iw4xServerWatchDog.DiscordBot.Services

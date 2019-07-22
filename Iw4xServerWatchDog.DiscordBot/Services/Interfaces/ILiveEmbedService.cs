@@ -5,7 +5,7 @@ using Iw4xServerWatchDog.Common.Configs;
 using Iw4xServerWatchDog.DiscordBot.Configs;
 using Iw4xServerWatchDog.Monitor;
 
-namespace Iw4xServerWatchDog.DiscordBot.Services
+namespace Iw4xServerWatchDog.DiscordBot.Services.Interfaces
 {
 	public interface ILiveEmbedService : IObservable<ServerEmbedInfo>
 	{

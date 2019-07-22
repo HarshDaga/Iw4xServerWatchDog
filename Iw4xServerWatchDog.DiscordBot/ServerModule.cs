@@ -4,6 +4,7 @@ using Discord.Commands;
 using Iw4xServerWatchDog.Common.Configs;
 using Iw4xServerWatchDog.DiscordBot.Configs;
 using Iw4xServerWatchDog.DiscordBot.Services;
+using Iw4xServerWatchDog.DiscordBot.Services.Interfaces;
 using Iw4xServerWatchDog.Monitor;
 
 namespace Iw4xServerWatchDog.DiscordBot
@@ -14,19 +15,23 @@ namespace Iw4xServerWatchDog.DiscordBot
 		public IServerMonitorService MonitorService { get; }
 		public ILiveEmbedService EmbedService { get; }
 		public IChannelUpdaterService ChannelUpdaterService { get; }
+		public PersonalNotificationService PersonalNotificationService { get; }
 		public ICommonResources Resources { get; }
 
 		public ServerModule ( IDiscordBotConfig config,
 		                      IServerMonitorService monitorService,
 		                      ILiveEmbedService embedService,
 		                      IChannelUpdaterService channelUpdaterService,
-		                      ICommonResources resources )
+		                      PersonalNotificationService personalNotificationService,
+		                      ICommonResources resources
+		)
 		{
-			Config                = config;
-			MonitorService        = monitorService;
-			EmbedService          = embedService;
-			ChannelUpdaterService = channelUpdaterService;
-			Resources             = resources;
+			Config                      = config;
+			MonitorService              = monitorService;
+			EmbedService                = embedService;
+			ChannelUpdaterService       = channelUpdaterService;
+			PersonalNotificationService = personalNotificationService;
+			Resources                   = resources;
 		}
 
 		[Command ( "status", RunMode = RunMode.Async )]
@@ -55,6 +60,15 @@ namespace Iw4xServerWatchDog.DiscordBot
 			);
 
 			await ChannelUpdaterService.Subscribe ( channel, Context.Client.CurrentUser.Id );
+		}
+
+		[Command ( "pingme", RunMode = RunMode.Async )]
+		[Remarks ( "Only notifies when a server goes offline" )]
+		[Summary ( "Receive server offline notifications as direct messages" )]
+		public async Task PingMeAsync ( )
+		{
+			var user = Context.User;
+			await PersonalNotificationService.Subscribe ( user );
 		}
 	}
 }
