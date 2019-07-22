@@ -74,6 +74,12 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 				embeds[args.Port] = embedInfo;
 			}
 
+			if ( args.Type == ServerEventType.Updated &&
+			     args.ServerInfo.Players.Count == args.OldServerInfo.Players.Count &&
+			     args.ServerInfo.Status.GameType == args.OldServerInfo.Status.GameType &&
+			     args.ServerInfo.Status.MapName == args.OldServerInfo.Status.MapName )
+				return;
+
 			embedInfo.OnChange ( args );
 			subject.OnNext ( embedInfo );
 			Task.Run ( ( ) => UpdateChannelAsync ( embedInfo ) );

@@ -42,7 +42,7 @@ namespace Iw4xServerWatchDog
 			builder.RegisterInstance ( resources ).As<ICommonResources> ( );
 			builder.RegisterType<ServerMonitorService> ( ).As<IServerMonitorService> ( ).SingleInstance ( );
 			builder.RegisterType<ProcessWatcherService> ( ).As<IProcessWatcherService> ( ).SingleInstance ( );
-			builder.RegisterType<DiscordBotServiceService> ( ).As<IDiscordBotService> ( ).SingleInstance ( );
+			builder.RegisterType<DiscordBotService> ( ).As<IDiscordBotService> ( ).SingleInstance ( );
 			builder.RegisterType<WatchDog> ( ).As<IWatchDog> ( ).SingleInstance ( );
 
 			return builder.Build ( );

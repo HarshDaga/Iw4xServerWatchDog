@@ -14,7 +14,7 @@ using NLog;
 
 namespace Iw4xServerWatchDog.DiscordBot
 {
-	public class DiscordBotServiceService : IDiscordBotService
+	public class DiscordBotService : IDiscordBotService
 	{
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( );
 
@@ -28,7 +28,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 		private readonly ChannelUpdaterService channelUpdaterService;
 		private readonly IServiceProvider services;
 
-		public DiscordBotServiceService ( IDiscordBotConfig config,
+		public DiscordBotService ( IDiscordBotConfig config,
 		                                  IServerMonitorService monitorService,
 		                                  IProcessWatcherService watcherService,
 		                                  ICommonResources resources )
