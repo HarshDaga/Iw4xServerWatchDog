@@ -1,4 +1,5 @@
-﻿using Iw4xServerWatchDog.DiscordBot;
+﻿using System.Threading.Tasks;
+using Iw4xServerWatchDog.DiscordBot;
 using Iw4xServerWatchDog.Monitor;
 using Iw4xServerWatchDog.Monitor.Configs;
 using Iw4xServerWatchDog.ProcessManagement;
@@ -13,6 +14,6 @@ namespace Iw4xServerWatchDog
 		IProcessWatcherService WatcherService { get; }
 
 		void Init ( );
-		void Start ( );
+		Task StartAsync ( );
 	}
 }

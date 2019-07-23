@@ -14,7 +14,7 @@ namespace Iw4xServerWatchDog.DiscordBot.Configs
 
 		// ReSharper disable once InconsistentNaming
 		public string ExternalIP { get; set; } = "127.0.0.1";
-		public TimeSpan MessageCooldown { get; set; } = TimeSpan.FromMilliseconds ( 200 );
+		public TimeSpan MessageCooldown { get; set; } = TimeSpan.FromSeconds ( 2 );
 
 		public DiscordBotConfig RestoreDefaults ( ) => this;
 

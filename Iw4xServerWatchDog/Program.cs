@@ -23,7 +23,7 @@ namespace Iw4xServerWatchDog
 
 			var watchDog = container.Resolve<IWatchDog> ( );
 			watchDog.Init ( );
-			watchDog.Start ( );
+			watchDog.StartAsync ( ).GetAwaiter ( ).GetResult ( );
 
 			Console.CancelKeyPress += ( _, args ) => Mre.Set ( );
 			Mre.WaitOne ( );

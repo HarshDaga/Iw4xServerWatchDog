@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Iw4xServerWatchDog.DiscordBot;
 using Iw4xServerWatchDog.Monitor;
 using Iw4xServerWatchDog.Monitor.Configs;
@@ -39,11 +40,10 @@ namespace Iw4xServerWatchDog
 			MonitorService.Where ( x => x.Type == ServerEventType.Updated ).Subscribe ( OnUpdated );
 		}
 
-		public void Start ( )
+		public async Task StartAsync ( )
 		{
-			WatcherService.StartAll ( );
 			MonitorService.StartAll ( );
-			DiscordBotService.StartAsync ( ).GetAwaiter ( ).GetResult ( );
+			await DiscordBotService.StartAsync ( );
 		}
 
 		private void OnOnline ( ServerStatusChangedEventArgs args )

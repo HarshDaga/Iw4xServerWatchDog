@@ -13,8 +13,8 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 	{
 		public IDiscordBotConfig Config { get; }
 		public ILiveEmbedService EmbedService { get; }
-		private readonly AsyncLock mutex = new AsyncLock ( );
 
+		private readonly AsyncLock mutex = new AsyncLock ( );
 		private ImmutableDictionary<ulong, IUser> users;
 
 		public PersonalNotificationService ( IDiscordBotConfig config,
