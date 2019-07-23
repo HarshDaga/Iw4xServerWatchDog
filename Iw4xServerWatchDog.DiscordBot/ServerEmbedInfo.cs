@@ -7,7 +7,7 @@ using Iw4xServerWatchDog.Monitor.Types;
 
 namespace Iw4xServerWatchDog.DiscordBot
 {
-	public class ServerEmbedInfo
+	internal class ServerEmbedInfo : IServerEmbedInfo
 	{
 		public IDiscordBotConfig Config { get; }
 		public ICommonResources Resources { get; }
@@ -36,7 +36,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 			ConnectString = $"iw4x://{Config.ExternalIP}:{Port}";
 		}
 
-		internal void OnChange ( ServerStatusChangedEventArgs args )
+		public void OnChange ( ServerStatusChangedEventArgs args )
 		{
 			var old = ServerInfo;
 			ServerInfo = args.ServerInfo;

@@ -9,7 +9,7 @@ using Nito.AsyncEx;
 
 namespace Iw4xServerWatchDog.DiscordBot.Services
 {
-	public class PersonalNotificationService : IPersonalNotificationService
+	internal class PersonalNotificationService : IPersonalNotificationService
 	{
 		public IDiscordBotConfig Config { get; }
 		public ILiveEmbedService EmbedService { get; }
@@ -40,10 +40,10 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 			await user.SendMessageAsync ( $"Turned notifications {( enabled ? "on" : "off" )}" );
 		}
 
-		private void NotifyUsers ( ServerEmbedInfo embedInfo ) =>
+		private void NotifyUsers ( IServerEmbedInfo embedInfo ) =>
 			Task.Run ( ( ) => NotifyUsersAsync ( embedInfo ) );
 
-		private async Task NotifyUsersAsync ( ServerEmbedInfo embedInfo )
+		private async Task NotifyUsersAsync ( IServerEmbedInfo embedInfo )
 		{
 			if ( embedInfo.EventType != ServerEventType.Offline )
 				return;

@@ -1,29 +1,28 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord.Commands;
 using Iw4xServerWatchDog.Common.Configs;
 using Iw4xServerWatchDog.DiscordBot.Configs;
-using Iw4xServerWatchDog.DiscordBot.Services;
 using Iw4xServerWatchDog.DiscordBot.Services.Interfaces;
 using Iw4xServerWatchDog.Monitor;
 
 namespace Iw4xServerWatchDog.DiscordBot
 {
-	public class ServerModule : ModuleBase<SocketCommandContext>
+	internal class ServerModule : ModuleBase<SocketCommandContext>
 	{
 		public IDiscordBotConfig Config { get; }
 		public IServerMonitorService MonitorService { get; }
 		public ILiveEmbedService EmbedService { get; }
 		public IChannelUpdaterService ChannelUpdaterService { get; }
-		public PersonalNotificationService PersonalNotificationService { get; }
+		public IPersonalNotificationService PersonalNotificationService { get; }
 		public ICommonResources Resources { get; }
 
-		public ServerModule ( IDiscordBotConfig config,
-		                      IServerMonitorService monitorService,
-		                      ILiveEmbedService embedService,
-		                      IChannelUpdaterService channelUpdaterService,
-		                      PersonalNotificationService personalNotificationService,
-		                      ICommonResources resources
+		public ServerModule (
+			IDiscordBotConfig config,
+			IServerMonitorService monitorService,
+			ILiveEmbedService embedService,
+			IChannelUpdaterService channelUpdaterService,
+			IPersonalNotificationService personalNotificationService,
+			ICommonResources resources
 		)
 		{
 			Config                      = config;
@@ -55,9 +54,9 @@ namespace Iw4xServerWatchDog.DiscordBot
 			var messages = channel.GetMessagesAsync ( );
 			await Utility.DeleteMessagesAsync (
 				messages,
-				x => x.Author.Id == Context.Client.CurrentUser.Id,
-				TimeSpan.FromMilliseconds ( 100 )
+				x => x.Author.Id == Context.Client.CurrentUser.Id
 			);
+			await Context.Message.DeleteAsync ( );
 
 			await ChannelUpdaterService.Subscribe ( channel, Context.Client.CurrentUser.Id );
 		}

@@ -8,15 +8,16 @@ using Nito.AsyncEx;
 
 namespace Iw4xServerWatchDog.DiscordBot.Services
 {
-	public class ChannelUpdaterService : IChannelUpdaterService
+	internal class ChannelUpdaterService : IChannelUpdaterService
 	{
 		public IDiscordBotConfig Config { get; }
 		public ILiveEmbedService EmbedService { get; }
-		private readonly AsyncLock mutex = new AsyncLock ( );
 
 		private ImmutableDictionary<int, IUserMessage> messages;
 		private IMessageChannel channel;
 		private DateTime nextMessageWaitTime;
+
+		private readonly AsyncLock mutex = new AsyncLock ( );
 
 		public ChannelUpdaterService ( IDiscordBotConfig config,
 		                               ILiveEmbedService embedService )
@@ -51,10 +52,10 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 			);
 		}
 
-		private void UpdateChannel ( ServerEmbedInfo embedInfo ) =>
+		private void UpdateChannel ( IServerEmbedInfo embedInfo ) =>
 			Task.Run ( ( ) => UpdateChannelAsync ( embedInfo ) );
 
-		private async Task UpdateChannelAsync ( ServerEmbedInfo embedInfo )
+		private async Task UpdateChannelAsync ( IServerEmbedInfo embedInfo )
 		{
 			if ( channel is null )
 				return;

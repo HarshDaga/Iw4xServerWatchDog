@@ -7,11 +7,11 @@ using Iw4xServerWatchDog.Monitor;
 
 namespace Iw4xServerWatchDog.DiscordBot.Services.Interfaces
 {
-	public interface ILiveEmbedService : IObservable<ServerEmbedInfo>
+	public interface ILiveEmbedService : IObservable<IServerEmbedInfo>
 	{
 		IDiscordBotConfig Config { get; }
 		ICommonResources Resources { get; }
-		ImmutableDictionary<int, ServerEmbedInfo> Embeds { get; }
+		ImmutableDictionary<int, IServerEmbedInfo> Embeds { get; }
 
 		void Add ( int port, string serverName );
 		Embed GetEmbed ( int port );

@@ -8,8 +8,9 @@ using NLog;
 
 namespace Iw4xServerWatchDog.DiscordBot
 {
-	public static class Utility
+	internal static class Utility
 	{
+		// ReSharper disable once UnusedMember.Local
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( );
 		private static readonly Regex ColorsRegex = new Regex ( @"\^([0-9]|\:)" );
 

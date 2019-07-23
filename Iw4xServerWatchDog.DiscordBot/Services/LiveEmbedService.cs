@@ -10,22 +10,22 @@ using Iw4xServerWatchDog.Monitor;
 
 namespace Iw4xServerWatchDog.DiscordBot.Services
 {
-	public class LiveEmbedService : ILiveEmbedService
+	internal class LiveEmbedService : ILiveEmbedService
 	{
 		public IDiscordBotConfig Config { get; }
 		public ICommonResources Resources { get; }
-		public ImmutableDictionary<int, ServerEmbedInfo> Embeds => embeds;
+		public ImmutableDictionary<int, IServerEmbedInfo> Embeds => embeds;
 
-		private readonly Subject<ServerEmbedInfo> subject;
-		private ImmutableDictionary<int, ServerEmbedInfo> embeds;
+		private readonly Subject<IServerEmbedInfo> subject;
+		private ImmutableDictionary<int, IServerEmbedInfo> embeds;
 
 		public LiveEmbedService ( IDiscordBotConfig config, ICommonResources resources )
 		{
 			Config    = config;
 			Resources = resources;
 
-			embeds  = ImmutableDictionary<int, ServerEmbedInfo>.Empty;
-			subject = new Subject<ServerEmbedInfo> ( );
+			embeds  = ImmutableDictionary<int, IServerEmbedInfo>.Empty;
+			subject = new Subject<IServerEmbedInfo> ( );
 		}
 
 		public void Add ( int port, string serverName )
@@ -40,7 +40,7 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 		public IDisposable SubscribeTo ( IObservable<ServerStatusChangedEventArgs> observable ) =>
 			observable.Subscribe ( OnServerStatusChange );
 
-		public IDisposable Subscribe ( IObserver<ServerEmbedInfo> observer ) =>
+		public IDisposable Subscribe ( IObserver<IServerEmbedInfo> observer ) =>
 			subject.Subscribe ( observer );
 
 		private void OnServerStatusChange ( ServerStatusChangedEventArgs args )

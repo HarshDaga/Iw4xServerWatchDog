@@ -28,7 +28,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 		private readonly CommandService commands;
 		private readonly ILiveEmbedService embedService;
 		private readonly IChannelUpdaterService channelUpdaterService;
-		private readonly PersonalNotificationService personalNotificationService;
+		private readonly IPersonalNotificationService personalNotificationService;
 		private readonly IServiceProvider services;
 
 		public DiscordBotService ( IDiscordBotConfig config,
@@ -80,7 +80,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 			builder.RegisterInstance ( Config ).As<IDiscordBotConfig> ( );
 			builder.RegisterInstance ( embedService ).As<ILiveEmbedService> ( );
 			builder.RegisterInstance ( channelUpdaterService ).As<IChannelUpdaterService> ( );
-			builder.RegisterInstance ( personalNotificationService ).As<PersonalNotificationService> ( );
+			builder.RegisterInstance ( personalNotificationService ).As<IPersonalNotificationService> ( );
 			return builder.Build ( );
 		}
 
