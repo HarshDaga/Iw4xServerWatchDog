@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Iw4xServerWatchDog.Common.Configs;
 using Iw4xServerWatchDog.DiscordBot.Configs;
@@ -41,13 +42,15 @@ namespace Iw4xServerWatchDog.DiscordBot
 			{
 				var embed = EmbedService.GetEmbed ( monitor.Port );
 				if ( embed != null )
-					await ReplyAsync ( embed: embed );
+					await Context.User.SendMessageAsync ( embed: embed );
 			}
 		}
 
 		[Command ( "sub", RunMode = RunMode.Async )]
 		[Remarks ( "Only 1 channel can be subscribed at a time" )]
 		[Summary ( "Subscribe to a channel for live server status updates" )]
+		[RequireBotPermission ( ChannelPermission.ManageMessages )]
+		[RequireUserPermission ( ChannelPermission.ManageMessages )]
 		public async Task SubAsync ( )
 		{
 			var channel = Context.Channel;
@@ -56,7 +59,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 				messages,
 				x => x.Author.Id == Context.Client.CurrentUser.Id
 			);
-			await Context.Message.DeleteAsync ( );
+			await Context.Message.TryDeleteAsync ( );
 
 			await ChannelUpdaterService.Subscribe ( channel, Context.Client.CurrentUser.Id );
 		}
@@ -68,6 +71,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 		{
 			var user = Context.User;
 			await PersonalNotificationService.Subscribe ( user );
+			await Context.Message.TryDeleteAsync ( );
 		}
 	}
 }

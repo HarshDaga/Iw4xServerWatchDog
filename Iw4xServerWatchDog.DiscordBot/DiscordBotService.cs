@@ -115,7 +115,7 @@ namespace Iw4xServerWatchDog.DiscordBot
 			if ( result.IsSuccess )
 				return;
 
-			await context.Channel.SendMessageAsync ( $"Error: {result}" );
+			await context.Channel.TrySendMessageAsync ( $"Error: {result}" );
 		}
 
 		private static Task Log ( LogMessage arg )

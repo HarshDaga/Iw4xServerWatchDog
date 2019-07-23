@@ -13,11 +13,11 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 		public IDiscordBotConfig Config { get; }
 		public ILiveEmbedService EmbedService { get; }
 
+		private readonly AsyncLock mutex = new AsyncLock ( );
+
 		private ImmutableDictionary<int, IUserMessage> messages;
 		private IMessageChannel channel;
 		private DateTime nextMessageWaitTime;
-
-		private readonly AsyncLock mutex = new AsyncLock ( );
 
 		public ChannelUpdaterService ( IDiscordBotConfig config,
 		                               ILiveEmbedService embedService )
@@ -69,10 +69,10 @@ namespace Iw4xServerWatchDog.DiscordBot.Services
 
 				var port = embedInfo.Port;
 				if ( messages.TryGetValue ( port, out var message ) )
-					await message.ModifyAsync ( properties => { properties.Embed = embedInfo.Embed; } );
+					await message.TryModifyAsync ( properties => { properties.Embed = embedInfo.Embed; } );
 				else
 				{
-					message  = await channel.SendMessageAsync ( embed: embedInfo.Embed );
+					message  = await channel.TrySendMessageAsync ( embed: embedInfo.Embed );
 					messages = messages.SetItem ( port, message );
 				}
 			}
