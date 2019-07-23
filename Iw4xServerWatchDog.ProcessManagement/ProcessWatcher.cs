@@ -89,7 +89,12 @@ namespace Iw4xServerWatchDog.ProcessManagement
 		private static void KillProcess ( string name, string title )
 		{
 			var process = FindProcess ( name, title );
-			process?.Kill ( );
+			if ( process != null )
+			{
+				var pid = process.Id;
+				process.Kill ( );
+				Logger.Info ( $"Killed {name} {pid}: {title}" );
+			}
 		}
 
 		public override string ToString ( ) =>
